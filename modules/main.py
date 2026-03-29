@@ -272,12 +272,17 @@ async def txt_handler(bot: Client, m: Message):
                         text = await resp.text()
                         url = re.search(r"(https://.*?playlist.m3u8.*?)\"", text).group(1)
 
-            elif 'classplusapp' in url or "testbook.com" in url or "classplusapp.com/drm" in url or "media-cdn.classplusapp.com/drm" in url:
-                url, contentId = url.split('&')
+            elif 'https://contentId=' in url:
+                
+                content = url.replace("https://", "").split("contentId=")[-1]
+                
+                if ".m3u8" in content:
+                    content = content.split(".m3u8")[0]
+                    
                 
                 headers = {
                     'host': 'api.classplusapp.com',
-                    'x-access-token': f'{cp_token}',    
+                    'x-access-token': raw_text4,    
                     'accept-language': 'EN',
                     'api-version': '18',
                     'app-version': '1.4.73.2',
@@ -293,12 +298,24 @@ async def txt_handler(bot: Client, m: Message):
                 }
                 
                 params = {
-                    'contentId': contentId,
+                    'contentId': content,
                     'offlineDownload': "false"
                 }
 
-                url = requests.get("https://api.classplusapp.com/cams/uploader/video/jw-signed-url", params=params, headers=headers).json().get("url")
-
+                response = requests.get(
+                    "https://api.classplusapp.com/cams/uploader/video/jw-signed-url",
+                    params=params,
+                    headers=headers
+                ).json()
+                
+                if "testbook.com" in url or "classplusapp.com/drm" in url or "media-cdn.classplusapp.com/drm" in url:
+                    url = res['drmUrls']['manifestUrl']
+                else:
+                    url = response["url"]
+                    
+                print("\nSigned URL:\n", url)
+            else:
+                print("Invalid Link")
 
             
             #elif '/master.mpd' in url:
