@@ -228,7 +228,7 @@ async def txt_handler(bot: Client, m: Message):
     else:
         CR = raw_text3
         
-    await editable.edit("**Enter Your PW Token For 𝐌𝐏𝐃 𝐔𝐑𝐋  or send 'unknown' for use default**")
+    await editable.edit("**Enter Your PW/CP Token For 𝐌𝐏𝐃 𝐔𝐑𝐋  or send 'unknown' for use default**")
     input4: Message = await bot.listen(editable.chat.id)
     raw_text4 = input4.text
     await input4.delete(True)
